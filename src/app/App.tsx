@@ -29,12 +29,12 @@ export default function App() {
   const [role, setRole] = useState<"student" | "admin">("student");
   const handleLogout = () => { setIsLoggedIn(false); setPage("home"); };
   const goDetails = (id: number) => { setSelected(id); setPage("details"); };
-  const nav = ["home", "workshops", "about", "instructors", "my"] as Page[];
+  const nav = ["home", "workshops", "about", "instructors", ...(isLoggedIn ? ["my" as Page] : [])] as Page[];
   const content = useMemo(() => {
     if (page === "about") return <About setPage={setPage} />;
     if (page === "workshops") return <Workshops goDetails={goDetails} setPage={setPage} />;
     if (page === "details") return <WorkshopDetails workshop={workshopsSeed[selected]} setPage={setPage} />;
-    if (page === "my") return <MyWorkshops goDetails={goDetails} setPage={setPage} />;
+    if (page === "my") return isLoggedIn ? <MyWorkshops goDetails={goDetails} setPage={setPage} /> : <section className="bg-slate-100 px-6 py-24"><div className="mx-auto max-w-3xl rounded-[2rem] bg-white p-10 text-center shadow-sm"><h1 className="text-3xl font-extrabold">Log in to see your workshops</h1><p className="mt-3 text-slate-600">Sign in to your account to view your enrolled workshops and track your progress.</p><button onClick={() => setPage("login")} className="mt-8 rounded-full bg-slate-950 px-6 py-3 text-white">Log In</button></div></section>;
     if (page === "instructors") return <Instructors />;
     if (page === "profile") return <Profile setPage={setPage} onLogout={handleLogout} />;
     if (page === "admin") return <Admin onLogout={handleLogout} />;
